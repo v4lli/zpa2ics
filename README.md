@@ -32,6 +32,8 @@ It's probably a good idea to add zpa2ics.py to crontab and re-fetch it e.g. dail
 <pre>@daily chronic /home/valentin/zpa2/zpa2ics.py ...</pre>
 
 ## Note
+This is a quick-and-dirty implementation. The code might look rather adventurous.
+
 The code currently does not verify the (invalid) ZPA certificate. Only use
 on trusted networks!
 
