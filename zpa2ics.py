@@ -10,10 +10,13 @@
 #               requests (`pip install requests`)
 
 # TODO:
+# - handle alternative lectures ("Ausweichtermin bzw. Raumänderung")
 # - certificate pinning
 # - convert date strings to objects
 # - error handling
-# - cache old weeks
+# - all weeks but the current one
+# - don't re-fetch past weeks
+# - log out when finished?
 
 from datetime import datetime, timedelta
 import re, os, sys
@@ -58,7 +61,7 @@ if __name__ == "__main__":
     login_data = dict(username=username, password=password, csrfmiddlewaretoken=csrftoken, next='/')
     r = client.post(zpa_base_url + "login/", data=login_data, headers=dict(Referer="/"))
 
-    # Slurp all weeks into RAM
+    # Slurp all weeks into memory
     weeks = []
     now = fromweek
     while True:
@@ -119,7 +122,7 @@ if __name__ == "__main__":
                     break
                 except ValueError:
                     if retry:
-                        print("skipping valueerror")
+                        print("skipping valueerror (canceled lecture??)")
                         break
                     if "Fällt aus!" in start_end_time[1]:
                         start_end_time[1] = start_end_time[1].split("\n")[0].rstrip()
@@ -133,9 +136,11 @@ if __name__ == "__main__":
                 else:
                     lectures[day] = [new_lecture]
             else:
-                print("Skipping canceled lecture:")
-                print(new_lecture)
+                # XXX use date object here instead... also improve error handling
+                print("Skipping canceled lecture on " + lect.parent.attrs["id"])
 
+
+    # generate ical feed from parsed lectures
     for d in sorted(lectures):
         #print(" == %s ==" % d.strftime("%d.%m.%Y"))
         for l in sorted(lectures[d], key=lambda h: h["start_time"]):
