@@ -37,14 +37,10 @@ This is a quick-and-dirty implementation. The code might look rather adventurous
 The code currently does not verify the (invalid) ZPA certificate. Only use
 on trusted networks!
 
-Alternative lectures ("yellow boxes") are currently NOT handled
-correctly (although this should be easily fixable).
-
 ## TODO
-- handle alternative lectures ("Ausweichtermin bzw. Raumänderung")
 - certificate pinning
 - convert date strings to objects
 - error handling
-- all weeks but the current one
+- cache all weeks but the current one
 - don't re-fetch past weeks
 - log out when finished?
