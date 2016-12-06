@@ -58,16 +58,20 @@ if __name__ == "__main__":
     client.get(zpa_base_url + "login/?")
     csrftoken = client.cookies['csrftoken']
 
-    login_data = dict(username=username, password=password, csrfmiddlewaretoken=csrftoken, next='/')
-    r = client.post(zpa_base_url + "login/", data=login_data, headers=dict(Referer="/"))
+    login_data = dict(username=username, password=password,
+        csrfmiddlewaretoken=csrftoken, next='/')
+    r = client.post(zpa_base_url + "login/", data=login_data,
+        headers=dict(Referer="/"))
 
     # Slurp all weeks into memory
     weeks = []
     now = fromweek
     while True:
         now += timedelta(weeks=1)
-        weekplan_data = dict(csrfmiddlewaretoken=client.cookies['csrftoken'], date=now.strftime("%d.%m.%Y"))
-        r = client.post(zpa_base_url + "student/week_plan/", data=weekplan_data, headers=dict(Referer="/student/week_plan/"))
+        weekplan_data = dict(csrfmiddlewaretoken=client.cookies['csrftoken'],
+            date=now.strftime("%d.%m.%Y"))
+        r = client.post(zpa_base_url + "student/week_plan/", data=weekplan_data,
+            headers=dict(Referer="/student/week_plan/"))
         weeks.append(r.text)
 
         if now > toweek:
@@ -149,10 +153,8 @@ if __name__ == "__main__":
             event.add('summary', l["name"])
             event.add('description', l["desc"])
             event.add('duration', l["end_time"] - l["start_time"])
-            if "loc" in l:
+            if "loc" in l and l["loc"]:
                 event.add('location', l["loc"])
-            else:
-                print("no loc")
             cal.add_component(event)
             #print("%s: %s (%s)" % (l["start_time"].strftime("%H:%M"), l["name"], l["desc"]))
 
