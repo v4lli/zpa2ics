@@ -81,8 +81,8 @@ if __name__ == "__main__":
     lectures = {}
     for week in weeks:
         soup = BeautifulSoup(week, 'html.parser')
-        # This selects all "normal"/"level 1" timeslots this week
-        for lect in soup.select("div .slot_1"):
+        # This selects all timeslots this week
+        for lect in soup.select("div .slot"):
             tslot = lect.attrs["id"]
             # We can assign any timeslot to a day by looking at the DOM parent
             day = datetime.strptime(lect.parent.attrs["id"], "%d.%m.%Y").date()
@@ -102,6 +102,12 @@ if __name__ == "__main__":
                     if match:
                         loc = striphtml(match.group(2)).rstrip().lstrip()
                         lecturer = striphtml(match.group(3)).rstrip().lstrip()
+                    else:
+                        # special format for some slots: R2.023 / Foo, B.
+                        match = re.match(r"^([^\/]+) \/ (.+)$", str(line))
+                        if match:
+                            loc = striphtml(match.group(1)).rstrip().lstrip()
+                            lecturer = striphtml(match.group(2)).rstrip().lstrip()
                 # wtf?
                 desc = " ".join(striphtml(str(desc)).split())
             else:
