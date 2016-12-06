@@ -118,6 +118,10 @@ if __name__ == "__main__":
             if "Praktikum" in desc:
                 name += " Praktikum"
 
+            # XXX make configurable
+            if "Zusatzübung" in desc:
+                continue
+
             retry = False
             while True:
                 try:
